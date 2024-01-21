@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
+import { Form as FormikForm, Field as FormikField } from 'formik';
 
-export const Form = styled.form`
+export const StyledForm = styled(FormikForm)`
   display: flex;
   flex-direction: column;
 `;
@@ -10,7 +11,7 @@ export const Label = styled.label`
   font-weight: 600;
 `;
 
-export const Input = styled.input`
+export const StyledField = styled(FormikField)`
   display: flex;
   flex-direction: column;
   margin: 12px auto;
@@ -18,6 +19,10 @@ export const Input = styled.input`
   font-size: 16px;
   text-align: left;
   padding: 8px 240px 8px 16px;
+`;
+
+export const ErrorText = styled.div`
+color: red;
 `;
 
 export const Button = styled.button`

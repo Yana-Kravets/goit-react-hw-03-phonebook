@@ -1,68 +1,66 @@
-import propTypes from 'prop-types';
-import React, { Component } from "react";
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Formik, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
 
-import { Form, Label, Input, Button } from './ContactForm.styled';
+import { StyledForm, StyledField, Label, ErrorText, Button } from './ContactForm.styled';
 
 export class ContactForm extends Component {
-  state = {
+  initialValues = {
     name: '',
     number: '',
   };
 
-   handleChange = e => {
-      const { name, value } = e.target;
-      this.setState({ [name]: value });
-   };
+  validationSchema = Yup.object().shape({
+    name: Yup.string().min(2, 'Too Short!')
+    .max(50, 'Too Long!').required(),
+    number: Yup.string().min(1).max(13).required(),
+  });
 
-   handleSubmit = e => {
-      e.preventDefault();
-      this.props.handleSubmit(this.state);
-      this.reset();
-   };
-
-    reset = () => {
-      this.setState({ name: '', number: '' });
-    };
+  handleSubmit = (values, { resetForm }) => {
+    this.props.handleSubmit(values);
+    resetForm();
+  };
 
   render() {
-    const { name, number } = this.state;
-
     return (
-      <Form onSubmit={this.handleSubmit}>
-        <Label>
-            Name 
-            <Input
+      <Formik
+        initialValues={this.initialValues}
+        validationSchema={this.validationSchema}
+        onSubmit={this.handleSubmit}
+      >
+        <StyledForm>
+          <Label>
+            Name
+            <StyledField
               type="text"
               name="name"
               placeholder="Enter name"
-              value={name}
-              onChange={this.handleChange}
-              pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-              title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-              required
+              // pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+              // title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+              // required
             />
-        </Label>
-        <Label>Number 
-            <Input
+            <ErrorMessage name="name" component={ErrorText} />
+          </Label>
+          <Label>
+            Number
+            <StyledField
               type="tel"
               name="number"
               placeholder="Enter phone number"
-              value={number}
-              onChange={this.handleChange}
-              pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-              title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-              required
+              // pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+              // title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+              // required
             />
-        </Label>
-        <Button type="submit">
-          Add contact
-        </Button>
-      </Form>
+            <ErrorMessage name="number" component={ErrorText} />
+          </Label>
+          <Button type="submit">Add contact</Button>
+        </StyledForm>
+      </Formik>
     );
   }
 }
 
 ContactForm.propTypes = {
-  handleSubmit: propTypes.func.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 };
-
